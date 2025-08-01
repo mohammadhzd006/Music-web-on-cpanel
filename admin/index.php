@@ -4,35 +4,61 @@ startSession();
 
 // Check if user is admin
 if (!isAdmin()) {
+    // Redirect to login with error message
+    $_SESSION['error'] = 'You must be logged in as an admin to access this page.';
     redirect('../login.php');
 }
 
-$pdo = getDBConnection();
+// Check if database connection works
+try {
+    $pdo = getDBConnection();
+} catch (Exception $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
 
-// Get statistics
-$stats = [
-    'users' => $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn(),
-    'tracks' => $pdo->query("SELECT COUNT(*) FROM tracks")->fetchColumn(),
-    'albums' => $pdo->query("SELECT COUNT(*) FROM albums")->fetchColumn(),
-    'playlists' => $pdo->query("SELECT COUNT(*) FROM playlists")->fetchColumn(),
-    'artists' => $pdo->query("SELECT COUNT(*) FROM artists")->fetchColumn(),
-    'pages' => $pdo->query("SELECT COUNT(*) FROM pages")->fetchColumn()
-];
+// Get statistics with error handling
+$stats = [];
+try {
+    $stats = [
+        'users' => $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn(),
+        'tracks' => $pdo->query("SELECT COUNT(*) FROM tracks")->fetchColumn(),
+        'albums' => $pdo->query("SELECT COUNT(*) FROM albums")->fetchColumn(),
+        'playlists' => $pdo->query("SELECT COUNT(*) FROM playlists")->fetchColumn(),
+        'artists' => $pdo->query("SELECT COUNT(*) FROM artists")->fetchColumn(),
+        'pages' => $pdo->query("SELECT COUNT(*) FROM pages")->fetchColumn()
+    ];
+} catch (Exception $e) {
+    $stats = [
+        'users' => 0,
+        'tracks' => 0,
+        'albums' => 0,
+        'playlists' => 0,
+        'artists' => 0,
+        'pages' => 0
+    ];
+}
 
-// Get recent activities
-$recentTracks = $pdo->query("
-    SELECT t.*, a.name as artist_name 
-    FROM tracks t 
-    LEFT JOIN artists a ON t.artist_id = a.id 
-    ORDER BY t.created_at DESC 
-    LIMIT 5
-")->fetchAll();
+// Get recent activities with error handling
+$recentTracks = [];
+$recentUsers = [];
 
-$recentUsers = $pdo->query("
-    SELECT * FROM users 
-    ORDER BY created_at DESC 
-    LIMIT 5
-")->fetchAll();
+try {
+    $recentTracks = $pdo->query("
+        SELECT t.*, a.name as artist_name 
+        FROM tracks t 
+        LEFT JOIN artists a ON t.artist_id = a.id 
+        ORDER BY t.created_at DESC 
+        LIMIT 5
+    ")->fetchAll();
+
+    $recentUsers = $pdo->query("
+        SELECT * FROM users 
+        ORDER BY created_at DESC 
+        LIMIT 5
+    ")->fetchAll();
+} catch (Exception $e) {
+    // Tables might not exist yet, continue with empty arrays
+}
 ?>
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
