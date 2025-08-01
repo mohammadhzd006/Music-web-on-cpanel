@@ -22,6 +22,7 @@ A modern, feature-rich music streaming website built with PHP, MySQL, and JavaSc
 - **User Management**: Manage user accounts and permissions
 - **Page Management**: Create and manage custom pages
 - **Menu Management**: Customize site navigation
+- **Database Management**: Backup and restore database
 
 ### 🎨 User Interface
 - **Dark Theme**: Modern, eye-friendly dark interface
@@ -42,20 +43,19 @@ A modern, feature-rich music streaming website built with PHP, MySQL, and JavaSc
 2. Ensure the following directories are writable:
    - `uploads/music/`
    - `uploads/covers/`
+   - `database/backups/`
 
 ### Step 2: Database Setup
 1. Create a MySQL database
-2. Import the database structure by visiting: `yourdomain.com/config/database.php`
-3. This will automatically create all necessary tables
+2. Run the installation script: `yourdomain.com/install.php`
+3. This will automatically create all necessary tables and sample data
 
 ### Step 3: Configuration
-1. Edit `config/database.php` with your database credentials:
-   ```php
-   define('DB_HOST', 'localhost');
-   define('DB_NAME', 'your_database_name');
-   define('DB_USER', 'your_database_user');
-   define('DB_PASS', 'your_database_password');
-   ```
+The system is pre-configured with your database credentials:
+- **Database:** `gbtechir_loov`
+- **User:** `gbtechir_mmd`
+- **Password:** `H.m33343536`
+- **Host:** `localhost`
 
 ### Step 4: Admin Access
 - **Default Admin Account**:
@@ -80,14 +80,19 @@ playcloud/
 │   ├── track.php         # Track API
 │   ├── ai-recommendations.php
 │   ├── generate-playlist.php
-│   └── search.php
+│   ├── search.php
+│   └── log-playback.php
 ├── assets/               # Frontend assets
 │   ├── css/
 │   │   └── style.css    # Main stylesheet
 │   └── js/
 │       └── player.js    # Music player
 ├── config/               # Configuration
-│   └── database.php     # Database config
+│   └── database.php     # Database connection settings
+├── database/             # Database management
+│   ├── schema.sql       # Database table structures
+│   ├── init.php         # Database initialization
+│   └── backup.php       # Database backup/restore
 ├── includes/             # PHP includes
 │   └── functions.php    # Utility functions
 ├── uploads/              # Uploaded files
@@ -96,8 +101,22 @@ playcloud/
 ├── index.php            # Main homepage
 ├── login.php            # Login page
 ├── register.php         # Registration page
+├── install.php          # Installation script
 └── README.md           # This file
 ```
+
+## Database Management
+
+### Manual Database Setup
+1. **Import Schema**: Use `database/schema.sql` to create tables
+2. **Initialize Data**: Run `database/init.php` to add sample data
+3. **Backup/Restore**: Use `database/backup.php` for database management
+
+### Database Files
+- **`config/database.php`**: Database connection settings
+- **`database/schema.sql`**: Complete database structure
+- **`database/init.php`**: Database initialization and sample data
+- **`database/backup.php`**: Database backup and restore functionality
 
 ## Usage
 
@@ -113,7 +132,8 @@ playcloud/
 2. **Manage Content**: Add tracks, albums, and artists
 3. **User Management**: Monitor and manage user accounts
 4. **Site Customization**: Create pages and customize menus
-5. **Analytics**: View site statistics and user activity
+5. **Database Management**: Backup and restore database
+6. **Analytics**: View site statistics and user activity
 
 ## API Endpoints
 
@@ -129,11 +149,14 @@ playcloud/
 ### Search
 - `GET /api/search.php?q={query}` - Search tracks, artists, albums
 
+### Playback Logging
+- `POST /api/log-playback.php` - Log user listening activity
+
 ## Customization
 
 ### Adding New Features
 1. Create new PHP files in appropriate directories
-2. Add database tables if needed
+2. Add database tables if needed (use `database/schema.sql`)
 3. Update admin panel for new content types
 4. Add corresponding API endpoints
 
@@ -153,6 +176,7 @@ The system uses the following main tables:
 - `listening_history` - User listening data
 - `pages` - Custom pages
 - `menu_items` - Navigation menu
+- `ai_recommendations` - AI recommendation data
 
 ## Security Features
 
@@ -190,6 +214,10 @@ The system uses the following main tables:
    - Verify audio files are uploaded to `uploads/music/`
    - Check browser console for JavaScript errors
 
+5. **Database Issues**
+   - Run `database/init.php` to reinitialize database
+   - Use `database/backup.php` to backup/restore data
+
 ### Support
 For technical support or feature requests, please contact the development team.
 
@@ -205,6 +233,7 @@ This project is proprietary software. All rights reserved.
   - AI recommendations
   - User management
   - Responsive design
+  - Database management tools
 
 ---
 

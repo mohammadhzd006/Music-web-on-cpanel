@@ -54,7 +54,8 @@ if (!empty($missing_extensions)) {
 $directories = [
     'uploads/music' => 'Music uploads',
     'uploads/covers' => 'Cover image uploads',
-    'admin/assets' => 'Admin assets'
+    'admin/assets' => 'Admin assets',
+    'database/backups' => 'Database backups'
 ];
 
 foreach ($directories as $dir => $description) {
@@ -90,8 +91,8 @@ if (isset($_POST['install'])) {
         $pdo->exec("CREATE DATABASE IF NOT EXISTS `$name` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
         $pdo->exec("USE `$name`");
         
-        // Include database configuration
-        require_once 'config/database.php';
+        // Include database initialization
+        require_once 'database/init.php';
         
         // Initialize database
         initializeDatabase();
